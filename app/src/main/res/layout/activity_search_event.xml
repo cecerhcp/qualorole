@@ -38,7 +38,7 @@
                 <EditText
                     android:layout_width="351dp"
                     android:layout_height="wrap_content"
-                    android:id="@+id/txtName"
+                    android:id="@+id/txtSearch"
                     android:background="@drawable/round_edittext"
                     android:layout_marginTop="0dp"
                     android:layout_marginBottom="15dp"
@@ -113,7 +113,8 @@
                     android:id="@+id/seekBar"
                     android:foregroundTint="#ffffff"
                     android:layout_weight="0.96"
-                    android:progress="50" />
+                    android:progress="50"
+                    android:indeterminate="false" />
 
                 <TextView
                     android:layout_width="wrap_content"
