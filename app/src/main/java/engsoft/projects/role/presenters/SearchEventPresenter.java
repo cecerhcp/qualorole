@@ -1,8 +1,11 @@
 package engsoft.projects.role.presenters;
 
+import android.widget.CheckBox;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import engsoft.projects.role.activities.SearchEventActivity;
 import engsoft.projects.role.models.Category;
 import engsoft.projects.role.models.Event;
 import engsoft.projects.role.models.Location;
@@ -10,6 +13,14 @@ import engsoft.projects.role.util.MockDatabase;
 import engsoft.projects.role.util.MockUserLocation;
 
 public class SearchEventPresenter {
+
+    private SearchEventActivity myActivity;
+
+    public SearchEventPresenter(SearchEventActivity activity) {
+
+        this.myActivity = activity;
+
+    }
 
     MockDatabase database = new MockDatabase();
     public List<Event> doSearch(String name, Double minPrice, Double maxPrice, Integer radius,
@@ -58,6 +69,34 @@ public class SearchEventPresenter {
         return results;
     }
 
+    public List<Category> getCategoriesFromCheckBoxes() {
+
+        List<Category> categories = new ArrayList<>();
+
+        for (int i = 0; i < myActivity.CATEGORIES; i++) {
+
+            CheckBox categoryCheckBox = myActivity.mCheckBoxes.get(i);
+            if (categoryCheckBox.isChecked()) {
+                Category category = new Category(categoryCheckBox.getText().toString());
+                categories.add(category);
+            }
+        }
+
+        return categories;
+    }
+
+    public boolean searchFormIsOk() {
+
+        String searchString = myActivity.mSearch.getText().toString();
+        String minPrice = myActivity.mMinPrice.getText().toString();
+        String maxPrice = myActivity.mMaxPrice.getText().toString();
+
+        if (!isValidSearchString(searchString)) return false;
+
+        if (!isValidPriceRange(minPrice, maxPrice)) return false;
+
+        return true;
+    }
 
     public boolean isInRadius(Location location, Integer radius) {
 
@@ -69,7 +108,7 @@ public class SearchEventPresenter {
         Double userLatitude = userLocation.getLatitude();
         Double userLongitude = userLocation.getLongitude();
 
-        // return calculateDistanceWithBothLocations();
+        // return calculateDistanceWithBothLocations(); // TODO implement this part
         return true;
     }
 
@@ -84,9 +123,10 @@ public class SearchEventPresenter {
     {
         if (!isValidNumberField(minPrice) || !isValidNumberField(maxPrice)) return false;
 
-        //stuff left to do yet
-        
-        return true;
+        Double min = Double.parseDouble(minPrice);
+        Double max = Double.parseDouble(maxPrice);
+
+        return min <= max;
     }
 
     public boolean isValidNumberField(String number) {

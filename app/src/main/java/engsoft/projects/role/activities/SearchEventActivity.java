@@ -4,7 +4,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -13,18 +15,28 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import engsoft.projects.role.R;
+import engsoft.projects.role.models.Category;
+import engsoft.projects.role.models.Event;
 import engsoft.projects.role.presenters.SearchEventPresenter;
 
 public class SearchEventActivity extends AppCompatActivity {
 
-    EditText mMinPrice;
-    EditText mMaxPrice;
-    EditText mSearch;
-    SeekBar mSeekBar;
-    Button mSearchButton;
-    TextView mRadius;
-    SearchEventPresenter mPresenter = new SearchEventPresenter();
+    public static int CATEGORIES = 6;
+
+    public EditText mMinPrice;
+    public EditText mMaxPrice;
+    public EditText mSearch;
+    public SeekBar mSeekBar;
+    public List<CheckBox> mCheckBoxes;
+    private Button mSearchButton;
+    private TextView mRadius;
+    private SearchEventPresenter myPresenter = new SearchEventPresenter(this);
+
+    List<Event> results;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +49,46 @@ public class SearchEventActivity extends AppCompatActivity {
         mSeekBar = (SeekBar) findViewById(R.id.seekBar);
         mSearchButton = (Button) findViewById(R.id.btSearch);
         mRadius = (TextView) findViewById(R.id.txtRadius);
+
+        /* binding checkBoxes to categories*/
+        List<Integer> categoryCheckBoxesIds = new ArrayList<>();
+        categoryCheckBoxesIds.add(R.id.cbBaladas);
+        categoryCheckBoxesIds.add(R.id.cbBotecos);
+        categoryCheckBoxesIds.add(R.id.cbEsportes);
+        categoryCheckBoxesIds.add(R.id.cbMuseus);
+        categoryCheckBoxesIds.add(R.id.cbRua);
+        categoryCheckBoxesIds.add(R.id.cbShows);
+        for (int i = 0; i < CATEGORIES; i++) {
+
+            CheckBox category;
+            category = (CheckBox) findViewById(categoryCheckBoxesIds.get(i));
+            mCheckBoxes.add(category);
+        }
+
+        mSearchButton.setOnClickListener( new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                String searchString = mSearch.getText().toString();
+                String minPrice = mMinPrice.getText().toString();
+                String maxPrice = mMaxPrice.getText().toString();
+                Integer radius = mSeekBar.getProgress();
+
+                List<Category> categories = myPresenter.getCategoriesFromCheckBoxes();
+
+                if (myPresenter.searchFormIsOk()) {
+
+                  Double minimum = Double.parseDouble(minPrice);
+                  Double maximum = Double.parseDouble(maxPrice);
+                  results = myPresenter.doSearch(searchString, minimum, maximum, radius, categories);
+                }
+                else results = new ArrayList<>();
+
+                // TODO implement loadingResults()
+
+            }
+        });
 
         mSeekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 
@@ -57,6 +109,7 @@ public class SearchEventActivity extends AppCompatActivity {
         });
 
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
