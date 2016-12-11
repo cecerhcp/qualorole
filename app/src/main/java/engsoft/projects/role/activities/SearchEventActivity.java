@@ -1,3 +1,4 @@
+
 package engsoft.projects.role.activities;
 
 import android.graphics.Color;
@@ -31,6 +32,7 @@ public class SearchEventActivity extends AppCompatActivity {
 
     public static int CATEGORIES = 6;
     public static double MAXPRICE = 1000000d;
+    public static int MAXDIST = 1000000;
 
     public EditText mMinPrice;
     public EditText mMaxPrice;
@@ -91,7 +93,7 @@ public class SearchEventActivity extends AppCompatActivity {
                 String searchString = mSearch.getText().toString();
                 String minPrice = mMinPrice.getText().toString();
                 String maxPrice = mMaxPrice.getText().toString();
-                Integer radius = mSeekBar.getProgress();
+                Integer radius = mSeekBar.getProgress() == 100 ? MAXDIST : mSeekBar.getProgress();
 
                 List<Category> categories = myPresenter.getCategoriesFromCheckBoxes();
 
@@ -121,6 +123,7 @@ public class SearchEventActivity extends AppCompatActivity {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
                 mRadius.setText(Integer.toString(progress) + "km");
+                if (progress == 100) mRadius.setText("Sem limites");
 
             }
         });
@@ -128,7 +131,6 @@ public class SearchEventActivity extends AppCompatActivity {
     }
 
     public void loadResults(List<Event> results) {
-        Log.d("loadResults", "entered!");
         if (mScrollLayout.getVisibility() == View.INVISIBLE) {
             mScrollLayout.setVisibility(View.VISIBLE);
             mScrollView.setVisibility(View.VISIBLE);
@@ -137,11 +139,12 @@ public class SearchEventActivity extends AppCompatActivity {
         mScrollLayout.removeAllViews();
         for (Event event : results) {
             LinearLayout layout = new LinearLayout(this);
+            layout.setBackground(getResources().getDrawable(R.drawable.roundedborderlayout));
             layout.setOrientation(LinearLayout.HORIZONTAL);
             TextView eventName = new TextView(this);
             eventName.setText(event.getName() + " - ");
             eventName.setTextColor(Color.WHITE);
-            eventName.setPadding(0, 0, 10, 0);
+            eventName.setPadding(0, 10, 10, 10);
             TextView eventPrice = new TextView(this);
             eventPrice.setText("R$" + Double.toString(event.getEntrancePrice()));
             eventPrice.setTextColor(Color.WHITE);

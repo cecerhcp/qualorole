@@ -1,3 +1,4 @@
+
 package engsoft.projects.role.models;
 
 import java.util.ArrayList;

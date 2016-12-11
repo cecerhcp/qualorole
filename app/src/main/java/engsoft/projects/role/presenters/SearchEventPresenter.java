@@ -1,3 +1,4 @@
+
 package engsoft.projects.role.presenters;
 
 import android.util.Log;
@@ -20,6 +21,12 @@ public class SearchEventPresenter {
     public SearchEventPresenter(SearchEventActivity activity) {
 
         this.myActivity = activity;
+
+    }
+
+    public SearchEventPresenter() {
+
+        this.myActivity = null;
 
     }
 
@@ -54,20 +61,20 @@ public class SearchEventPresenter {
             Event event = results.get(i);
             Double price = event.getEntrancePrice();
             if (price < minPrice || price > maxPrice) {
-                Log.d("oia", "removeu no price");
                 results.remove(event);
                 continue;
             }
 
-            if (!event.getName().toLowerCase().contains(name)) {
-                Log.d("oia", "removeu no getname");
-                results.remove(event);
-                continue;
+            if (!event.getName().trim().isEmpty()) {
+                if (!event.getName().toLowerCase().contains(name)) {
+                    results.remove(event);
+                    continue;
+                }
             }
+
 
             Location eventLocation = event.getAddress();
             if (!isInRadius(eventLocation, radius)) {
-                Log.d("oia", "removeu no radius " + radius.toString());
                 results.remove(event);
                 continue;
             }
@@ -97,8 +104,6 @@ public class SearchEventPresenter {
         String searchString = myActivity.mSearch.getText().toString();
         String minPrice = myActivity.mMinPrice.getText().toString();
         String maxPrice = myActivity.mMaxPrice.getText().toString();
-
-        if (!isValidSearchString(searchString)) return false;
 
         if (!isValidPriceRange(minPrice, maxPrice)) return false;
 
@@ -148,7 +153,7 @@ public class SearchEventPresenter {
     {
         if (minPrice.equals("") || maxPrice.equals("")) return true;
 
-        if (!isValidNumberField(minPrice) || !isValidNumberField(maxPrice)) return false;
+        if (!isValidPriceField(minPrice) || !isValidPriceField(maxPrice)) return false;
 
         Double min = Double.parseDouble(minPrice);
         Double max = Double.parseDouble(maxPrice);
@@ -156,7 +161,7 @@ public class SearchEventPresenter {
         return min <= max;
     }
 
-    public boolean isValidNumberField(String number) {
+    public boolean isValidPriceField(String number) {
 
         try {
 
@@ -169,7 +174,7 @@ public class SearchEventPresenter {
             return false;
         }
 
-        return true;
+        return Double.parseDouble(number) >= 0;
     }
 
     public boolean isEmptyTextField(String text) {

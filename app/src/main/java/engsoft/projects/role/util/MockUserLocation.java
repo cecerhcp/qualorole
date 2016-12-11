@@ -1,3 +1,4 @@
+
 package engsoft.projects.role.util;
 
 public class MockUserLocation {
