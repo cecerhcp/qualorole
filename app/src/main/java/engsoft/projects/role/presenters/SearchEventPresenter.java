@@ -1,5 +1,6 @@
 package engsoft.projects.role.presenters;
 
+import android.util.Log;
 import android.widget.CheckBox;
 
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ public class SearchEventPresenter {
     }
 
     MockDatabase database = new MockDatabase();
+
     public List<Event> doSearch(String name, Double minPrice, Double maxPrice, Integer radius,
                                 List<Category> categories) {
 
@@ -35,37 +37,42 @@ public class SearchEventPresenter {
             Boolean belongsToSearchCategories = false;
             for (Category eventCategory : eventCategories) {
 
-                if (categories.contains(eventCategory)) {
-                    belongsToSearchCategories = true;
-                    break;
+                for (Category category : categories) {
+                    if (category.getName().equals(eventCategory.getName())) {
+                        belongsToSearchCategories = true;
+                        break;
+                    }
                 }
+                if (belongsToSearchCategories) break;
             }
+
             if (belongsToSearchCategories) results.add(event);
         }
 
-
-        for (int i = results.size(); i > 0; i--) {
+        for (int i = results.size() -1; i >= 0; i--) {
 
             Event event = results.get(i);
             Double price = event.getEntrancePrice();
             if (price < minPrice || price > maxPrice) {
+                Log.d("oia", "removeu no price");
                 results.remove(event);
                 continue;
             }
 
-            if (!event.getName().contains(name)) {
+            if (!event.getName().toLowerCase().contains(name)) {
+                Log.d("oia", "removeu no getname");
                 results.remove(event);
                 continue;
             }
 
             Location eventLocation = event.getAddress();
             if (!isInRadius(eventLocation, radius)) {
+                Log.d("oia", "removeu no radius " + radius.toString());
                 results.remove(event);
                 continue;
             }
 
         }
-
         return results;
     }
 
@@ -77,7 +84,7 @@ public class SearchEventPresenter {
 
             CheckBox categoryCheckBox = myActivity.mCheckBoxes.get(i);
             if (categoryCheckBox.isChecked()) {
-                Category category = new Category(categoryCheckBox.getText().toString());
+                Category category = new Category(categoryCheckBox.getHint().toString());
                 categories.add(category);
             }
         }
@@ -108,19 +115,39 @@ public class SearchEventPresenter {
         Double userLatitude = userLocation.getLatitude();
         Double userLongitude = userLocation.getLongitude();
 
-        // return calculateDistanceWithBothLocations(); // TODO implement this part
-        return true;
+        return distanceBetweenCoordinates(userLatitude, eventLatitude, userLongitude,
+                eventLongitude) <= radius;
+    }
+
+    public static double distanceBetweenCoordinates(double lat1, double lat2, double lon1,
+                                  double lon2) {
+
+        final int R = 6371; // Radius of the earth
+
+        Double latDistance = Math.toRadians(lat2 - lat1);
+        Double lonDistance = Math.toRadians(lon2 - lon1);
+        Double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+        Double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        double distance = R * c; // convert to meters
+
+        distance = Math.pow(distance, 2);
+
+        return Math.sqrt(distance);
     }
 
 
     public boolean isValidSearchString(String search) {
 
-        return isEmptyTextField(search) && search != null;
+        return !isEmptyTextField(search);
 
     }
 
     public boolean isValidPriceRange(String minPrice, String maxPrice)
     {
+        if (minPrice.equals("") || maxPrice.equals("")) return true;
+
         if (!isValidNumberField(minPrice) || !isValidNumberField(maxPrice)) return false;
 
         Double min = Double.parseDouble(minPrice);

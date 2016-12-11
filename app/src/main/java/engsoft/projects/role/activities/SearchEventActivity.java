@@ -1,13 +1,17 @@
 package engsoft.projects.role.activities;
 
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -26,6 +30,7 @@ import engsoft.projects.role.presenters.SearchEventPresenter;
 public class SearchEventActivity extends AppCompatActivity {
 
     public static int CATEGORIES = 6;
+    public static double MAXPRICE = 1000000d;
 
     public EditText mMinPrice;
     public EditText mMaxPrice;
@@ -35,6 +40,8 @@ public class SearchEventActivity extends AppCompatActivity {
     private Button mSearchButton;
     private TextView mRadius;
     private SearchEventPresenter myPresenter = new SearchEventPresenter(this);
+    private LinearLayout mScrollLayout;
+    private ScrollView mScrollView;
 
     List<Event> results;
 
@@ -49,6 +56,10 @@ public class SearchEventActivity extends AppCompatActivity {
         mSeekBar = (SeekBar) findViewById(R.id.seekBar);
         mSearchButton = (Button) findViewById(R.id.btSearch);
         mRadius = (TextView) findViewById(R.id.txtRadius);
+        mScrollLayout = (LinearLayout) findViewById(R.id.scrollLayout);
+        mScrollView = (ScrollView) findViewById(R.id.scrollView);
+        mCheckBoxes = new ArrayList<>();
+
 
         /* binding checkBoxes to categories*/
         List<Integer> categoryCheckBoxesIds = new ArrayList<>();
@@ -58,12 +69,19 @@ public class SearchEventActivity extends AppCompatActivity {
         categoryCheckBoxesIds.add(R.id.cbMuseus);
         categoryCheckBoxesIds.add(R.id.cbRua);
         categoryCheckBoxesIds.add(R.id.cbShows);
+
+        mMinPrice.setMaxWidth(mMinPrice.getWidth());
+        mMaxPrice.setMaxWidth(mMaxPrice.getWidth());
+        mSearch.setMaxWidth(mSearch.getWidth());
         for (int i = 0; i < CATEGORIES; i++) {
 
             CheckBox category;
             category = (CheckBox) findViewById(categoryCheckBoxesIds.get(i));
             mCheckBoxes.add(category);
         }
+
+        mSeekBar.setProgress(50);
+        mRadius.setText("50 km");
 
         mSearchButton.setOnClickListener( new View.OnClickListener() {
 
@@ -78,14 +96,13 @@ public class SearchEventActivity extends AppCompatActivity {
                 List<Category> categories = myPresenter.getCategoriesFromCheckBoxes();
 
                 if (myPresenter.searchFormIsOk()) {
-
-                  Double minimum = Double.parseDouble(minPrice);
-                  Double maximum = Double.parseDouble(maxPrice);
+                  Double minimum = minPrice.equals("") ? 0 : Double.parseDouble(minPrice);
+                  Double maximum = maxPrice.equals("") ? MAXPRICE : Double.parseDouble(maxPrice);
                   results = myPresenter.doSearch(searchString, minimum, maximum, radius, categories);
                 }
                 else results = new ArrayList<>();
 
-                // TODO implement loadingResults()
+                 loadResults(results);
 
             }
         });
@@ -103,11 +120,45 @@ public class SearchEventActivity extends AppCompatActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
-                mRadius.setText(progress);
+                mRadius.setText(Integer.toString(progress) + "km");
 
             }
         });
 
+    }
+
+    public void loadResults(List<Event> results) {
+        Log.d("loadResults", "entered!");
+        if (mScrollLayout.getVisibility() == View.INVISIBLE) {
+            mScrollLayout.setVisibility(View.VISIBLE);
+            mScrollView.setVisibility(View.VISIBLE);
+        }
+
+        mScrollLayout.removeAllViews();
+        for (Event event : results) {
+            LinearLayout layout = new LinearLayout(this);
+            layout.setOrientation(LinearLayout.HORIZONTAL);
+            TextView eventName = new TextView(this);
+            eventName.setText(event.getName() + " - ");
+            eventName.setTextColor(Color.WHITE);
+            eventName.setPadding(0, 0, 10, 0);
+            TextView eventPrice = new TextView(this);
+            eventPrice.setText("R$" + Double.toString(event.getEntrancePrice()));
+            eventPrice.setTextColor(Color.WHITE);
+            layout.addView(eventName);
+            layout.addView(eventPrice);
+            mScrollLayout.addView(layout);
+        }
+
+        if (results.isEmpty()) {
+            LinearLayout layout = new LinearLayout(this);
+            layout.setOrientation(LinearLayout.HORIZONTAL);
+            TextView resultText = new TextView(this);
+            resultText.setText("Busca sem resultados!!!");
+            resultText.setTextColor(Color.WHITE);
+            layout.addView(resultText);
+            mScrollLayout.addView(layout);
+        }
     }
 
 

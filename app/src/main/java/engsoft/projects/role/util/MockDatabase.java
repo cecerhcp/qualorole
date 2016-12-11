@@ -17,6 +17,15 @@ public class MockDatabase {
         this.categories = new ArrayList<>();
         this.events = new ArrayList<>();
         this.locations = new ArrayList<>();
+
+        Location testLocation = new Location("Brazil", "Sao Paulo", "Santo Andre", "Rua Carinas", "218",
+                "09185510", 5d, 2, -23d, -46d);
+        this.addLocation(testLocation);
+        Event testEvent = new Event("Festa Engsoft", 50d, testLocation);
+        testEvent.addCategory(new Category("narua"));
+        this.addEvent(testEvent);
+
+
     }
 
     public void addCategory(Category category) {

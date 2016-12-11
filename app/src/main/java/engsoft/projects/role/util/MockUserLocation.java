@@ -2,8 +2,8 @@ package engsoft.projects.role.util;
 
 public class MockUserLocation {
 
-    private static Double USER_LATITUDE = 50d;
-    private static Double USER_LONGITUDE = 50d;
+    private static Double USER_LATITUDE = -23.2d;
+    private static Double USER_LONGITUDE = -46d;
 
     private Double latitude;
     private Double longitude;

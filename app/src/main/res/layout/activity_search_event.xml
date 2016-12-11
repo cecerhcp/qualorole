@@ -42,7 +42,8 @@
                     android:background="@drawable/round_edittext"
                     android:layout_marginTop="0dp"
                     android:layout_marginBottom="15dp"
-                    android:layout_weight="0.65" />
+                    android:layout_weight="0.65"
+                    android:maxLines="1" />
 
             </LinearLayout>
 
@@ -67,7 +68,8 @@
                     android:id="@+id/txtMin"
                     android:background="@drawable/round_edittext"
                     android:layout_weight="0.40"
-                    android:layout_marginRight="5dp" />
+                    android:layout_marginRight="5dp"
+                    android:maxLines="1" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -86,7 +88,8 @@
                     android:id="@+id/txtMax"
                     android:background="@drawable/round_edittext"
                     android:layout_weight="0.40"
-                    android:layout_marginRight="0dp" />
+                    android:layout_marginRight="0dp"
+                    android:maxLines="1" />
 
             </LinearLayout>
 
@@ -156,7 +159,8 @@
                         android:id="@+id/cbShows"
                         android:textColor="#ffffff"
                         android:buttonTint="#ffffff"
-                        android:checked="false" />
+                        android:checked="true"
+                        android:hint="shows" />
 
                     <CheckBox
                         android:layout_width="wrap_content"
@@ -166,7 +170,8 @@
                         android:textColor="#ffffff"
                         android:layout_marginLeft="30dp"
                         android:buttonTint="#ffffff"
-                        android:checked="false" />
+                        android:checked="true"
+                        android:hint="baladas" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -182,7 +187,8 @@
                         android:id="@+id/cbMuseus"
                         android:textColor="#ffffff"
                         android:buttonTint="#ffffff"
-                        android:checked="false" />
+                        android:checked="true"
+                        android:hint="museus" />
 
                     <CheckBox
                         android:layout_width="wrap_content"
@@ -192,7 +198,8 @@
                         android:textColor="#ffffff"
                         android:layout_marginLeft="30dp"
                         android:buttonTint="#ffffff"
-                        android:checked="false" />
+                        android:checked="true"
+                        android:hint="esportes" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -208,7 +215,8 @@
                         android:id="@+id/cbBotecos"
                         android:textColor="#ffffff"
                         android:buttonTint="#ffffff"
-                        android:checked="false" />
+                        android:checked="true"
+                        android:hint="botecos" />
 
                     <CheckBox
                         android:layout_width="wrap_content"
@@ -218,7 +226,8 @@
                         android:textColor="#ffffff"
                         android:layout_marginLeft="30dp"
                         android:buttonTint="#ffffff"
-                        android:checked="false" />
+                        android:checked="true"
+                        android:hint="narua" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -240,15 +249,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/scrollView"
-            android:layout_marginLeft="110dp">
+            android:layout_marginLeft="85dp"
+            android:visibility="invisible"
+            android:background="@drawable/roundedborderlayout"
+            android:layout_marginTop="20dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="@string/results"
-                android:id="@+id/textView2"
-                android:textColor="#ffffff" />
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/scrollLayout"
+                android:background="@drawable/roundedborderlayout"
+                android:visibility="invisible">
+
+            </LinearLayout>
         </ScrollView>
 
     </LinearLayout>
