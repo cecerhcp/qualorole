@@ -10,4 +10,9 @@
 
 ### Foi testado e rodou num Samsung Galaxy J3, Android 5.1.1
 
+### Testes de aceitação feito com a framework Espresso 2.2.2
+
 ### Foi buildado com Gradle 2.2.0, e usamos JUnit 4.12 para os testes.
+
+### Design Pattern utilizado: MVP
+
