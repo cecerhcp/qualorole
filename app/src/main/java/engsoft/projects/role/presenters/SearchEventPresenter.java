@@ -3,6 +3,7 @@ package engsoft.projects.role.presenters;
 
 import android.util.Log;
 import android.widget.CheckBox;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -105,7 +106,11 @@ public class SearchEventPresenter {
         String minPrice = myActivity.mMinPrice.getText().toString();
         String maxPrice = myActivity.mMaxPrice.getText().toString();
 
-        if (!isValidPriceRange(minPrice, maxPrice)) return false;
+        if (!isValidPriceRange(minPrice, maxPrice)) {
+            Toast.makeText(myActivity.getApplicationContext(), "Algum campo inválido",
+                    Toast.LENGTH_SHORT).show();
+            return false;
+        }
 
         return true;
     }
@@ -151,9 +156,9 @@ public class SearchEventPresenter {
 
     public boolean isValidPriceRange(String minPrice, String maxPrice)
     {
-        if (minPrice.equals("") || maxPrice.equals("")) return true;
-
         if (!isValidPriceField(minPrice) || !isValidPriceField(maxPrice)) return false;
+
+        if (minPrice.equals("") || maxPrice.equals("")) return true;
 
         Double min = Double.parseDouble(minPrice);
         Double max = Double.parseDouble(maxPrice);
@@ -171,7 +176,7 @@ public class SearchEventPresenter {
 
         catch (NumberFormatException e) {
 
-            return false;
+            return number.equals("");
         }
 
         return Double.parseDouble(number) >= 0;
